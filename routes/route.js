@@ -18,6 +18,7 @@ import {
   deleteUser,
   getAllUsers,
   getNotificationData,
+  getUserById,
   sendMsg,
   updateUser,
 } from "../controllers/userController.js";
@@ -65,14 +66,10 @@ router.post("/resend-otp", resendOTP);
 router.post("/verifyOtp", unifiedVerifyOTPHelper);
 
 //User
-router.post(
-  "/register-user",
-  adminAuth,
-  upload.array("images", 10),
-  createUser
-);
+router.post("/register-user",adminAuth,upload.array("images", 10),createUser);
 router.post("/applyCourse", applyCourse);
 router.get("/get-all-users", adminAuth, getAllUsers);
+router.get("/get-user-by-id", adminAuth, getUserById);
 router.put("/update-user/:id", adminAuth, upload.any(), updateUser);
 router.delete("/delete-user/:id", adminAuth, deleteUser);
 router.post("/apply-in-a-course", applyInACourse);
@@ -80,6 +77,7 @@ router.get("/get-team-member", getTeam);
 router.post("/send-msg", sendMsg);
 router.get("/get-notification", getNotificationData);
 router.delete("/delete-notification/:id/:type", deleteNotification);
+
 
 // Create Course
 router.post("/addCourse", adminAuth, upload.array("images", 10), addCourse);
