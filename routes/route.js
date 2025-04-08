@@ -69,7 +69,7 @@ router.post("/verifyOtp", unifiedVerifyOTPHelper);
 router.post("/register-user",adminAuth,upload.array("images", 10),createUser);
 router.post("/applyCourse", applyCourse);
 router.get("/get-all-users", adminAuth, getAllUsers);
-router.get("/get-user-by-id", adminAuth, getUserById);
+router.post("/get-user-by-id", adminAuth, getUserById);
 router.put("/update-user/:id", adminAuth, upload.any(), updateUser);
 router.delete("/delete-user/:id", adminAuth, deleteUser);
 router.post("/apply-in-a-course", applyInACourse);
