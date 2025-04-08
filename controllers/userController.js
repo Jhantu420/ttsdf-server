@@ -46,7 +46,7 @@ const createUser = async (req, res) => {
       !branchName ||
       !branchCode ||
       !courseName ||
-      !highestQualification||
+      !highestQualification ||
       files.length === 0
     ) {
       return res.status(400).json({
@@ -146,7 +146,7 @@ const createUser = async (req, res) => {
         newNumber = String(lastNumber + 1).padStart(3, "0");
       }
     }
-    userId = `RYIT/WB-${branchCode}/${newNumber}`;
+    userId = `${role}/${branchCode}/${newNumber}`;
 
     // ✅ Generate OTP
     const otp = generateOTP();
@@ -433,7 +433,7 @@ const getNotificationData = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
-        branchCourseCount:applyDataCount,
+        branchCourseCount: applyDataCount,
         totalCount: applyDataCount + applyCourseCount + sendMsgCount,
         applyData,
         applyCourse,
@@ -460,11 +460,14 @@ const deleteNotification = async (req, res) => {
     }
 
     if (!deletedMessage) {
-      return res.status(404).json({ success: false, message: "Message not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Message not found" });
     }
 
-    return res.status(200).json({ success: true, message: "Notification deleted successfully" });
-
+    return res
+      .status(200)
+      .json({ success: true, message: "Notification deleted successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
@@ -553,6 +556,48 @@ const applyInACourse = async (req, res) => {
     .status(200)
     .json({ success: true, message: "Applied, We will contact you soon" });
 };
+
+
+const getUserById = async (req, res) => {
+  try {
+    const requestingAdmin = await adminModel.findById(req.userId);
+
+    if (
+      !requestingAdmin ||
+      !["super", "branchAdmin"].includes(requestingAdmin.role)
+    ) {
+      return res.status(403).json({ message: "Access denied." });
+    }
+    const {userId} = req.body;
+    
+    if (!userId) {
+      return res.status(404).json({ message: "Registration number is required." });
+    }
+    const user = await userModel.findOne({userId});
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    // Restrict Branch Admin from generating users certificate outside their branch
+    if (
+      requestingAdmin.role === "branchAdmin" &&
+      requestingAdmin.branchName !== user.branchName
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Cannot generate certificate from other branches." });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 export {
   createUser,
   applyCourse,
@@ -563,4 +608,5 @@ export {
   sendMsg,
   getNotificationData,
   deleteNotification,
+  getUserById,
 };
