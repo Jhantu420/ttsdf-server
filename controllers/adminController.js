@@ -6,6 +6,7 @@ import cloudinary from "../helper/cloudinary.js";
 import streamifier from "streamifier";
 import userModel from "../model/userModel.js";
 import TeamModel from "../model/ourTeam.js";
+import { Activity } from "../model/activityModel.js";
 
 const registerAdmin = async (req, res) => {
   try {
@@ -511,6 +512,33 @@ const getTeam = async (req, res) => {
   }
 };
 
+const getAllActivities = async (req, res) => {
+  try {
+    const activities = await Activity.find().sort({ createdAt: -1 });
+    res.status(200).json(activities);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const createActivity = async (req, res) => {
+  const requestingAdmin = await adminModel.findById(req.userId);
+  if (
+    !requestingAdmin ||
+    !["super"].includes(requestingAdmin.role)
+  ) {
+    return res.status(403).json({ message: "Access denied." });
+  }
+  
+  const { title, videoUrl } = req.body;
+  try {
+    const newActivity = new Activity({ title, videoUrl });
+    await newActivity.save();
+    res.status(201).json(newActivity);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 export {
   registerAdmin,
@@ -520,4 +548,6 @@ export {
   getAllBranchAdmins,
   createTeam,
   getTeam,
+  getAllActivities,
+  createActivity,
 };
