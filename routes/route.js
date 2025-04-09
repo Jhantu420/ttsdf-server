@@ -1,8 +1,10 @@
 import express from "express";
 import {
+  createActivity,
   createBranchAdmin,
   createTeam,
   deleteBranchAdmin,
+  getAllActivities,
   getAllBranchAdmins,
   getTeam,
   registerAdmin,
@@ -56,6 +58,8 @@ router.delete("/delete-branch-admin/:id", adminAuth, deleteBranchAdmin);
 router.post("/upload-image", adminAuth, upload.array("images", 5), RecentImage);
 router.get("/recent", getRecentImages); // Fetch recent images
 router.post("/create-team", adminAuth, upload.single("image"), createTeam);
+router.post("/create-activity", adminAuth, createActivity);
+router.get("/get-activity",  getAllActivities);
 
 // Unified Login , Logout, Forgor Password, Reset Password, Vefiry OTP
 router.post("/login", unifiedLogin);
