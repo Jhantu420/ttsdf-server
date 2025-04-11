@@ -1,6 +1,3 @@
-
-
-
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
@@ -13,7 +10,7 @@ const userSchema = new mongoose.Schema(
     dob: { type: String, required: true },
     dor: { type: String, required: true },
     gender: { type: String, required: true },
-    mobile: { type: String, required: true, unique: true },
+    mobile: { type: String, required: true, unique: true ,  },
     highestQualification: {type: String, required: true},
     image: { type: String, default: "" },
     email: { type: String, required: true, unique: true },
@@ -22,6 +19,9 @@ const userSchema = new mongoose.Schema(
     branchName: { type: String, required: true },
     branchCode:{type: String, required: true},
     courseName: { type: String, required: true },
+    courseDuration : { type: String, required: true },
+    marks : {type: String},
+    grade: {type: String},
     activeStatus: { type: Boolean, default: true },
     
     // ✅ Google Login Fields
