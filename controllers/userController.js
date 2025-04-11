@@ -26,6 +26,8 @@ const createUser = async (req, res) => {
       branchName,
       branchCode,
       courseName,
+      courseDuration,
+      marks,
       highestQualification,
     } = req.body;
 
@@ -46,6 +48,7 @@ const createUser = async (req, res) => {
       !branchName ||
       !branchCode ||
       !courseName ||
+      !courseDuration ||
       !highestQualification ||
       files.length === 0
     ) {
@@ -146,7 +149,7 @@ const createUser = async (req, res) => {
         newNumber = String(lastNumber + 1).padStart(3, "0");
       }
     }
-    userId = `${role}/${branchCode}/${newNumber}`;
+    userId = `RYIT/WB-${branchCode}/${newNumber}`;
 
     // ✅ Generate OTP
     const otp = generateOTP();
@@ -201,6 +204,8 @@ const createUser = async (req, res) => {
       role,
       branchName,
       courseName,
+      courseDuration,
+      marks,
       branchCode,
       highestQualification,
       isVerified: false,
@@ -256,6 +261,8 @@ const updateUser = async (req, res) => {
       mobile,
       email,
       branchName, // optional if changing branch
+      marks,
+      grade,
       activeStatus, // new field for status toggle
     } = req.body;
 
@@ -345,6 +352,8 @@ const updateUser = async (req, res) => {
       gender: gender || user.gender,
       mobile: mobile || user.mobile,
       email: email || user.email,
+      marks: marks || user.marks,
+      grade: grade || user.grade,
       activeStatus:
         activeStatus !== undefined ? activeStatus : user.activeStatus, // handle active status
     });
